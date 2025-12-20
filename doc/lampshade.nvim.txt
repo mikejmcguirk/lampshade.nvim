@@ -1,0 +1,116 @@
+==============================================================================
+Illuminate code actions                                         *lampshade.nvim*
+
+VSCode-style code action lightbulb. No configuration required.
+
+The API can be used to customize how the lamp displays and which actions
+trigger it.
+
+==============================================================================
+Installation                                            *lampshade-installation*
+
+Neovim 0.11+ is supported
+
+Lazy.nvim:
+>
+    "mikejmcguirk/lampshade.nvim",
+    lazy = false,
+    init = function()
+        -- Customize here
+    end,
+<
+vim.pack spec (v0.12+):
+>
+    { src = "https://github.com/mikejmcguirk/lampshade.nvim" },
+<
+Verify installation and settings with ":checkhealth lampshade"
+
+==============================================================================
+Configuration                                                 *lampshade-config*
+
+lampshade_default_autocmds                          *lampshade_default_autocmds*
+    (Default true) If this g:variable is true during plugin sourcing, the
+    default auto commands to trigger the lamp will be created.
+
+    Each LSP buffer will have the augroup "lampshade-"{bufnr} created to
+    manage the lamp. The creation of those autocmds is is handled in the
+    "lampshade-init" augroup
+
+    The lamp will be displayed on BufEnter, CursorMoved, InsertLeave, and
+    TextChanged.
+
+    The lamp will be cleared on BufLeave and InsertEnter
+
+    Type: ~
+        boolean
+
+
+By default, the lamp is displayed using the "LampshadeLamp" highlight group.
+It links to |hl-DiagnosticInfo|.
+
+==============================================================================
+API                                                              *lampshade-api*
+
+lampshade.UpdateLamp.Opts                            *lampshade.UpdateLamp.Opts*
+
+    Fields: ~
+        {debounce?}    (integer)
+
+                       ( Default: 200ms ) How long to hold codeAction
+                       requests before sending them to the server.
+                       If another local function call is made before
+                       the timer expires, the timer will be stopped
+                       without sending a request to the server, and
+                       restarted at its full duration.
+
+        {on_display?}  (fun(bufnr:integer,lnum:integer,hl_ns:integer))
+
+                       Custom function to display the lamp. The calling
+                       function will clear the namespace beforehand. By
+                       default, the lamp will be displayed as virtual
+                       text using the DiagnosticInfo highlight group.
+
+                       The namespace will be cleared before the function
+                       is called.
+
+                       By default, the lamp will be displayed as virtual text.
+
+        {on_actions?}  (fun(client_id:integer,action:lsp.Command|lsp.CodeAction):boolean)
+
+                       Function to filter out actions that should not be
+                       considered toward showing the lightbulb. By default,
+                       any action with a disabled flag is filtered.
+
+
+
+M.update_lamp({buf}, {opts?})                                    *M.update_lamp*
+    Update a buffer's lamp display. All other lamps will be cleared
+
+
+    Parameters: ~
+        {buf}    (integer) Buffer to show the lamp in
+        {opts?}  (lampshade.UpdateLamp.Opts) See |lampshade.UpdateLamp.Opts|
+
+    Returns: ~
+        (nil)
+
+
+M.clear_lamp({buf})                                               *M.clear_lamp*
+    Stop showing the lamp in a buffer. This will also cancel any pending LSP
+    requests
+
+
+    Parameters: ~
+        {buf}  (integer) Buffer to clear the lamp in
+
+    Returns: ~
+        (nil)
+
+
+M.get_hl_ns()                                                      *M.get_hl_ns*
+
+    Returns: ~
+        (integer)  lamp extmark namespace
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:
