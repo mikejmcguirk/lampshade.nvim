@@ -24,17 +24,20 @@ The API can be used to customize how the lamp displays and which actions trigger
     { src = "https://github.com/mikejmcguirk/nvim-qf-rancher" },
 ```
 
-## Configuration
+## Default Behavior
 
-By default, ``vim.g.lampshade_default_autocmds`` will be set to true and the default autocmds
-to display the lamp will be created during plugin sourcing.
+During plugin sourcing, ``vim.g.lampshade_default_autocmds`` will be checked. If it is ``true`` or ``nil``, the default autocmds to display and clear the lamp will be created.
 
-Each LSP buffer will have the augroup ``lampshade-{bufnr}`` created to manage the lamp. The creation of those autocmds is is handled in the ``lampshade-init`` augroup
+Each LSP buffer will have the augroup ``lampshade-[bufnr]`` created to manage the lamp. The creation of those autocmds is is handled in the ``lampshade-init`` augroup.
 
-- The lamp will be displayed on ``BufEnter``, ``CursorMoved``, ``InsertLeave``, and ``TextChanged``.
+- The lamp will be displayed on ``BufEnter``, ``CursorMoved``, ``DiagnosticChanged``, ``InsertLeave``, and ``TextChanged``
 - The lamp will be cleared on ``BufLeave`` and ``InsertEnter``
 
-To create your own custom autocmds, disable ``vim.g.lampshade_default_autocmds`` before the plugin is sourced (in Lazy.nvim, use the init function), and then create your own autocmds utilizing the API. An example is demonstrated below:
+## Customization
+
+Set ``vim.g.lampshade_default_autocmds`` to ``false`` before the plugin is sourced. Then, create your own autocmds utilizing the API.
+
+Example:
 
 ```lua
 vim.g.lampshade_default_autocmds = false
