@@ -29,15 +29,16 @@ Verify installation and settings with ":checkhealth lampshade"
 Configuration                                                 *lampshade-config*
 
 lampshade_default_autocmds                          *lampshade_default_autocmds*
-    (Default true) If this g:variable is true during plugin sourcing, the
-    default auto commands to trigger the lamp will be created.
+    (Default true) This g:variable is checked during plugin sourcing. If it is
+    true or nil, the default auto commands to display and clear the lamp will
+    be created.
 
     Each LSP buffer will have the augroup "lampshade-"{bufnr} created to
     manage the lamp. The creation of those autocmds is is handled in the
-    "lampshade-init" augroup
+    "lampshade-init" augroup.
 
-    The lamp will be displayed on BufEnter, CursorMoved, InsertLeave, and
-    TextChanged.
+    The lamp will be displayed on BufEnter, CursorMoved, DiagnosticChanged,
+    InsertLeave, and TextChanged.
 
     The lamp will be cleared on BufLeave and InsertEnter
 
