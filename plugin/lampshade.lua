@@ -41,6 +41,7 @@ api.nvim_create_autocmd("LspAttach", {
         local update_events = {
             "BufEnter",
             "CursorMoved",
+            "DiagnosticChanged",
             "InsertLeave",
             "TextChanged",
         }
@@ -50,6 +51,15 @@ api.nvim_create_autocmd("LspAttach", {
             buffer = buf,
             desc = "Show lamp",
             callback = function(iev)
+                if iev.event == "DiagnosticChanged" then
+                    local mode = api.nvim_get_mode().mode
+                    local short_mode = string.sub(mode, 1)
+                    local bad_mode = string.match(short_mode, "[csS\19irR]")
+                    if bad_mode then
+                        return
+                    end
+                end
+
                 lamp.update_lamp(iev.buf)
             end,
         })

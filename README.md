@@ -64,6 +64,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local opts = {} ---@type lampshade.UpdateLamp.Opts
         local ft = vim.api.nvim_get_option_value("filetype", { buf = buf }) ---@type string
         if ft == "lua" then
+            -- Don't show the lamp for "Change to parameter" actions
             opts.on_actions = function(client_id, action)
                 if action.disabled then
                     return false
@@ -88,6 +89,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
             end
         end
 
+        -- Display the lamp in the sign column instead of as virtual text
         local on_display = function(bufnr, lnum, hl_ns)
             vim.api.nvim_buf_set_extmark(bufnr, hl_ns, lnum, 0, {
                 sign_text = "󰌶",
@@ -106,6 +108,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local update_events = {
             "BufEnter",
             "CursorMoved",
+            "DiagnosticChanged",
             "InsertLeave",
             "TextChanged",
         }
@@ -115,6 +118,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
             buffer = buf,
             desc = "Show lamp",
             callback = function(iev)
+                if iev.event == "DiagnosticChanged" then
+                    local mode = api.nvim_get_mode().mode
+                    local short_mode = string.sub(mode, 1)
+                    local bad_mode = string.match(short_mode, "[csS\19irR]")
+                    if bad_mode then
+                        return
+                    end
+                end
+
                 lamp.update_lamp(iev.buf, opts)
             end,
         })
