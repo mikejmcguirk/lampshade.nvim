@@ -1,5 +1,7 @@
 ## Lampshade.nvim
 
+![readme_000](assets/img/README_000.png)
+
 VSCode-style code action lightbulb. No configuration required.
 
 The API can be used to customize how the lamp displays and which actions trigger it.
