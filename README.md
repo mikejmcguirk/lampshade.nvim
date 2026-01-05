@@ -21,7 +21,7 @@ The API can be used to customize how the lamp displays and which actions trigger
 #### vim.pack (nightly):
 
 ```lua
-    { src = "https://github.com/mikejmcguirk/nvim-qf-rancher" },
+    { src = "https://github.com/mikejmcguirk/lampshade.nvim" },
 ```
 
 ## Default Behavior
